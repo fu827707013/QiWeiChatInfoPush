@@ -5,6 +5,8 @@ import com.example.demo.service.wechat.CeateWeChat;
 import com.example.demo.service.wechat.SendMessage;
 import com.example.demo.service.wechat.SendMessageGroup;
 import com.example.demo.service.wechat.WeixinAccessTokenService;
+import com.example.demo.utils.Cache;
+import com.example.demo.utils.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @RestController
 public class SendMessageController {
@@ -21,13 +24,17 @@ public class SendMessageController {
 
     @GetMapping("/WXGetToken/{corpid}")
     public String WXGetToken(@PathVariable(name = "corpid") String corpid, @RequestParam(name = "corpsecret") String corpsecret) {
-        String res="";
+        String token = "";
         try {
-            res= meixinAccessTokenService.getEnterpriseAccessToken(corpid, corpsecret);
+            token = meixinAccessTokenService.getEnterpriseAccessToken(corpid, corpsecret);
+            // 将token写入缓存
+            Cache cToken = new Cache();
+            cToken.setKey(token);
+            CacheManager.putCache("token",cToken);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return res;
+        return token;
     }
 
     @Autowired
@@ -38,6 +45,10 @@ public class SendMessageController {
             , @RequestParam(name = "chatid") String chatid, @RequestParam(name = "access_token") String access_token) {
         if (name.length() == 0)
             name = "消息推送测试群";
+
+
+//        Cache cToken =  CacheManager.getCacheInfo("token");
+//        cToken.getKey()
         return ceateWeChat.CeateWeChatpost(access_token, name, chatid);
     }
 

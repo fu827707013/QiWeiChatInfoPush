@@ -1,14 +1,11 @@
 package com.example.demo.service.wechat;
 
 import com.alibaba.fastjson.JSONObject;
-import com.example.demo.pojo.CreateChatGroup;
 import com.example.demo.pojo.markdownModel;
 import com.example.demo.utils.MapInitializer;
 import okhttp3.*;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
